@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>search</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .main{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .title{
+            width: 100%;
+            text-align: center;
+            font-size: 40px;
+        }
+        .input{
+            display: flex;
+            width: 100%;
+            justify-content: center;
+
+        }
+        .item{
+            width: 500px;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            border-color: black;
+            border-width: 2px;
+            border-style: solid;
+        }
+        .blogtitle{
+            font-size: 20px;
+            font-weight: 400;
+
+        }
+        .blogauthor{
+            font-size: 12px;
+
+        }
+    </style>
+</head>
+<body>
+    <div id="search">
+        <div class="main">
+           <div class="title">搜索</div>
+           <div class="input">
+               <input type="text" placeholder="请输入作者或者博客标题" v-model="sinput">
+               <button @click="search">搜索</button>
+           </div>
+           <div class="result">
+               <div class="item" v-for="(item,index) in results" @click="showblog(index)" :key="index">
+                <div class="blogtitle">{{item.blogtitle}}</div>
+                <div class="blogauthor">作者:{{item.username}}</div>
+               </div>
+           </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        new Vue({
+            el:"#search",
+            data(){
+                return{
+                    results:[],
+                    sinput:""
+                }
+            },
+            methods:{
+                search(){
+                    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+                    axios.post('/searchblog',{
+                        input:this.sinput
+                    }).then((res)=>{
+                   this.results=res.data.results
+                })
+                },
+                showblog(index){
+                     localStorage.setItem("itemtitle",this.results[index].blogtitle);
+                     localStorage.setItem("itemauthor",this.results[index].username);
+                     localStorage.setItem("itemmain",this.results[index].blogmain);
+                     window.location.href="/showblog"
+                 },
+
+
+            }
+        })
+    </script>
+</body>
+</html>

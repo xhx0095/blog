@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .title{
+            width: 100%;
+            text-align: center;
+            font-size: 40px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .author{
+            width: 100%;
+            font-size: 10px;
+            text-align: center;
+        }
+        .text{
+            width: 100%;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="blog">
+        <div class="title">{{title}}</div>
+        <div class="author">作者:{{author}}</div>
+        <div class="text">{{main}}</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        new Vue({
+           el:"#blog",
+           data(){
+               return{
+                   title:localStorage["itemtitle"],
+                   author:localStorage["itemauthor"],
+                   main:localStorage["itemmain"]
+
+               }
+           },
+           methods:{
+
+           },
+           destroyed(){
+              localStorage.removeItem("itemshow");
+           }
+
+        })
+    </script>
+</body>
+</html>

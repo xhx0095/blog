@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog main</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .top{
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 100px;
+            border-bottom: 3px;
+            border-bottom-style: solid;
+            border-bottom-color: black;
+            align-items: center;
+        }
+        .wel{
+            font-size: 50px;
+            text-align: center;
+            line-height: 50px;
+        }
+        .exit{
+            font-size: 25px;
+            background-color: black;
+            color: white;
+            width: 100px;
+            margin-right: 100px;
+            height: 50px;
+            line-height: 50px;
+        }
+        .main{
+            height: 800px;
+            width: 100%;
+            align-items: stretch;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 3px;
+            display: flex;
+            flex-direction: row;
+        }
+        .choose{
+            width: 25%;
+            height: 800px;
+            border-right-color:black;
+            border-right-width: 3px;
+            border-right-style: solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .showblog{
+            width: 75%;
+            height: 800px;
+        }
+        .butt{
+            width: 50%;
+            height: 70px;
+            text-align: center;
+            background-color: black;
+            color: white;
+            line-height: 70px;
+            margin-top: 40px;
+        }
+        .showblog{
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .item{
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+            border-color: black;
+            border-width: 2px;
+            border-style: solid;
+        }
+        .blogtitle{
+            font-size: 20px;
+            font-weight: 400;
+
+        }
+        .blogauthor{
+            font-size: 12px;
+
+        }
+    </style>
+</head>
+<body>
+    <div id="blogmain" v-cloak>
+       <div class="top">
+           <div class="wel">welcome {{username}}</div>
+           <button class="exit" @click="exit">退出</button>
+       </div>
+       <div class="main">
+           <div class="choose">
+               <button class="butt" @click="tomy">{{username}}的主页</button>
+               <button class="butt" @click="tosearch">搜索博客</button>
+           </div>
+           <div class="showblog">
+               <div class="item" v-for="(item,index) in blog" @click="showblog(index)" :key="index">
+                   <div class="blogtitle">{{item.blogtitle}}</div>
+                   <div class="blogauthor">作者:{{item.username}}</div>
+               </div>
+           </div>
+       </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+         new Vue({
+             el:"#blogmain",
+             data(){
+                 return{
+                     username:localStorage.username,
+                     blog:[]
+
+                 }
+             },
+             beforeCreate(){
+                 if(!localStorage.username){
+                    window.location.href='/log'
+                 }
+             },
+             methods:{
+                 exit(){
+                     localStorage.removeItem('username');
+                     localStorage.removeItem('password');
+                     window.location.href='/'
+                 },
+                 tomy(){
+                     window.location.href='/my';
+                 },
+                 showblog(index){
+                     localStorage.setItem("itemtitle",this.blog[index].blogtitle);
+                     localStorage.setItem("itemauthor",this.blog[index].username);
+                     localStorage.setItem("itemmain",this.blog[index].blogmain);
+                     window.location.href="/showblog"
+                 },
+                 tosearch(){
+                     window.location.href='/search'
+                 }
+             },
+             beforeCreate(){
+                  axios.get('/getblog',{}).then((res)=>{
+                      if(res.status){
+                          console.log(res.data.results)
+                          this.blog=res.data.results;
+                      }else{
+                          alert("错误")
+                      }
+                  });
+                  if(!localStorage['username']){
+                      alert("请登录")
+                      window.location.href='/log'
+                  }
+                
+             }
+         })
+    </script>
+</body>
+</html>

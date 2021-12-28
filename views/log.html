@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>log page</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            display: flex;
+            justify-content: center;            
+            align-items: center;
+        }
+        .content{
+            width: 300px;
+            height: 500px;
+            display: flex;
+            border-color: black;
+            border-width: 3px;
+            border-style: solid;
+            flex-direction: column;
+            margin-top: 40px;
+
+        }
+        .title{
+            font-size: 30px;
+            width: 100%;
+            text-align: center;
+        }
+        .item{
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .butt{
+            width: 60px;
+            height: 40px;
+            background-color: black;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="mainlog">
+        <div class="content">
+            <div class="title">请输入您的信息</div><br>
+            <div class="item">请输入手机号</div>
+            <div class="item"><input type="text" v-model="phonenumber"></div>
+            <div class="item">请输入密码</div>
+            <div class="item"><input type="password" v-model="password"></div>
+            <div class="item"><button class="butt" @click="log">登录</button></div>    
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+         new Vue({
+             el:"#mainlog",
+             data(){
+                 return{
+                     phonenumber:'',
+                     password:""
+                 }
+             },
+             methods:{
+                 log(){
+                     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+                     axios.post('/login',{
+                         phonenumber:this.phonenumber,
+                         password:this.password
+                     }).then((res)=>{
+                         console.log(res.data)
+                         if(res.data.status){
+                             alert(res.data.msg)
+                             localStorage.setItem("username",res.data.userinfo.username);
+                             localStorage.setItem("phonenumber",res.data.phonenumber);
+                             window.location.href = "/blogmain";
+                         }else{
+                             alert('请重新输入')
+                         }
+                     })
+
+                 }
+             }
+         })
+    </script>
+</body>
+</html>
